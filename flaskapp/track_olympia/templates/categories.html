@@ -77,17 +77,13 @@
 
     <div class="container">
       <div class="starter-template">
-        <h3>Bills you might care about:</h3>
-        <p class="lead">Here are some active bills related to your search.<br> You may want to contact your legislator about these!</p>
+        <h3>Here's a category that might be related to your bill:</h3>
+        <p class="lead">You may want to search for more bills related to this topic.</p>
       </div>
-
-      <table class="table table-hover">
-      <tr><th>Agency</th><th>Bill Number</th><th>Description</th></tr>
-      {% for bill in bills %}
-      <tr><td>{{ bill['agency'] }}</td><td>{{ bill['bill_id']}}</td><td> {{ bill['description'] }}</td></tr>
-      {% endfor %}
-      </table>
-
+      <div class="starter-template">
+        <h3>{{ category }}</h3>
+      </div>
+  
 
      </div><!-- /.container -->
 

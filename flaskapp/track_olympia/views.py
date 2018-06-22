@@ -2,6 +2,7 @@ from flask import render_template
 from flask import request
 from track_olympia import app
 from corpus import vectorize
+from national_model import return_category
 
 from gensim.test.utils import common_corpus, common_dictionary, get_tmpfile
 from gensim.models import LsiModel
@@ -24,12 +25,12 @@ def bill_input():
     return render_template("input.html")
 
 
-@app.route('/#about')
-def bill_input():
+@app.route('/about')
+def about_screen():
     return render_template("about.html")
 
-@app.route('/#contact')
-def bill_input():
+@app.route('/contact')
+def contact_input():
     return render_template("contact.html")
 
 
@@ -50,5 +51,10 @@ def bill_output():
   print(bills)
   return render_template("output.html",bills = bills)
 
-  
+@app.route('/category')
+def category_output():
+   input = request.args.get('category_search')
+   output_category = return_category(input)
+   print(output_category)
+   return render_template("categories.html",category = output_category.iloc[0]) 
 
