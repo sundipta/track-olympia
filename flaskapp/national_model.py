@@ -12,14 +12,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 
 #load classifier trained on national congressional data
-clf = joblib.load('/Users/sundipta/Insight_notebooks/lr_national.pkl') 
+clf = joblib.load('lr_national.pkl') 
 
 #load matrix transformer
 transformer = TfidfTransformer()
-loaded_vec = TfidfVectorizer(decode_error="replace",vocabulary=pickle.load(open("/Users/sundipta/Insight_notebooks/features.pkl", "rb")))
+loaded_vec = TfidfVectorizer(decode_error="replace",vocabulary=pickle.load(open("features.pkl", "rb")))
 
 #load csv for transforming back to labels
-categories=pd.read_csv('/Users/sundipta/Insight_notebooks/categories.csv', index_col=0)
+categories=pd.read_csv('categories.csv', index_col=0)
 
 def clean_text(texts):
     clean_words = []

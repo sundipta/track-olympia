@@ -16,7 +16,7 @@ from pprint import pprint  # pretty-printer
 import pandas as pd
 import numpy as np
 
-bill_info = pd.read_csv("/Users/sundipta/Insight_notebooks/bill_descriptions.csv", index_col = 0)
+bill_info = pd.read_csv("bill_descriptions.csv", index_col = 0)
 bill_info_subset = bill_info[~bill_info['LongDescription'].isnull()]
 
 documents = bill_info_subset['LongDescription'].tolist()
