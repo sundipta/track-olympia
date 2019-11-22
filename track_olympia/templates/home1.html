@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Track Olympia</title>
+    
+<style>
+.districts {
+  fill: gray;
+}
+
+.districts :hover {
+  fill: #1f363d;
+  cursor: pointer;
+  stroke: white;
+  stroke-width: 1.5px;
+}
+
+.district-borders {
+  fill: none;
+  stroke: white;
+  stroke-width: 0.75px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.info {
+  fill: black;
+  fill-opacity: .75;
+  font-family: san-serif;
+  font-size: 20px;
+  font-weight: 100;
+  text-anchor: left;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	text-decoration: none;
+	pointer-events:none;
+}
+
+
+.info-number {
+  fill: black;
+  fill-opacity: .75;
+  font-family: san-serif;
+  font-size: 50px;
+  font-weight: 100;
+  text-anchor: left;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	text-decoration: none;
+	pointer-events:none;
+}
+
+.centroid-point {
+  fill: black;
+  fill-opacity: .75;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	text-decoration: none;
+	pointer-events:none;
+}
+
+</style>
+
+    <!-- Bootstrap -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css" rel="stylesheet">
+    
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Track Olympia</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-right">
+          	<li><a href="map">Map</a></li>
+          	<li><a href="search">Search</a></li>
+            <li><a href="about">About</a></li>
+            <li><a href="contact">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+  
+  
+<br><br>
+
+
+
+<div class="container">
+	<div class="Map">
+	</div>
+	
+    
+</div> <!-- /.container-->
+
+
+    <!-- d3 -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://d3js.org/topojson.v2.min.js"></script>
+	<script src = "https://cdnjs.cloudflare.com/ajax/libs/d3-transform/1.0.4/d3-transform.min.js"></script>
+    <!-- d3-bootstrap -->
+    <!-- <script src="../static/js/d3-bootstrap-withextra.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    
+
+  	<script>
+  	var svg = d3.select( ".Map" )
+  				.append( "svg" )
+  				.classed("svg-container", true)
+  //responsive SVG needs these 2 attributes and no width and height attr
+  				.attr("preserveAspectRatio", "xMinYMin meet")
+  				.attr("viewBox", "0 0 1000 600")
+  // class to make it responsive
+  				.attr('class', 'svg-content-responsive');
+
+	//Define path generator
+    var path = d3.geoPath();
+    
+    var my_transform = d3Transform()
+   		.translate([0, -100])
+   		.rotate(0);
+
+    //Load in GeoJSON data
+    d3.json("../static/data/wa_projnorth-quantized-topo.json", function(wa) {
+//  		if (error) throw error;
+        //Bind data and create one path per GeoJSON feature  
+        svg.append("g")
+    		.attr("class", "districts")
+    		.attr("transform", my_transform)
+    		.selectAll("path")
+    		.data(topojson.feature(wa, wa.objects.districts).features)
+    		.enter().append("a")
+			.attr("xlink:href", function(d) {return "/" + d.properties.NAME})
+			.append("path")
+    		.attr("d", path)
+    		.on("mouseover", function(d) {
+   			  var xPosition = 120;
+              var yPosition = 160;
+            //var xPosition = d3.mouse(this)[0];
+            //var yPosition = d3.mouse(this)[1] - 30;
+            svg.append("text")
+                .attr("class", "info-number")
+                .attr("id", "tooltip")
+                .attr("x", xPosition)
+                .attr("y", yPosition )
+                .text(d.properties.NAME);
+            d3.select(this)
+                .attr("class", "selected");
+        })
+        .on("mouseout", function(d) {
+            d3.select("#tooltip").remove();
+            d3.select(this)
+            .transition()
+            .attr("class", "land")
+            .duration(250)
+        });
+
+
+  svg.append("path")
+      .attr("class", "district-borders")
+      .attr("transform", my_transform)
+      .attr("d", path(topojson.mesh(wa, wa.objects.districts, function(a, b) { return a !== b; })));
+      
+	svg.append("text")
+        .attr("class", "info")
+        .attr("x", 3)
+        .attr("y", 33 )
+        .text("CLICK YOUR DISTRICT TO FIND YOUR REPRESENTATIVES");
+
+	svg.append("text")
+        .attr("class", "info")
+        .attr("x", 100)
+        .attr("y", 100 )
+        .text("LEGISLATIVE");
+        
+	svg.append("text")
+        .attr("class", "info")
+        .attr("x", 100)
+        .attr("y", 120 )
+        .text("DISTRICT");
+
+	svg.selectAll("circle")
+    .data(topojson.feature(wa, wa.objects.districts).features)
+      .enter().append("circle")
+      	.attr("class", "centroid-point")
+ 	  .attr("transform", function(d) { 
+ 	    var centroid = path.centroid(d)
+ 	    return "translate(" + centroid[0] + " " + (centroid[1] - 100) + ")"
+	  })
+		.attr("r", "1.5px")
+		.attr("fill", "black")
+
+  });
+</script>
+
+<div class="container">
+	<div class="Track Olympia">
+		<h4>Search for Bills by Issue:</h4>
+	</div>
+
+	<form action="/output" method="GET">
+		<div class="form-group">
+			<label for="bill_search">Issue:</label>
+          <input type="text" id="search" name='bill_search' placeholder="e.g. Education "> <br>
+          <button type="submit" class="btn btn-default btn-lg">Find some bills!</button>
+        </div>     	
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+<script src="static/js/bootstrap.min.js"></script>
+  </body>
+</html>
