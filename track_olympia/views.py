@@ -79,7 +79,7 @@ def contact_input():
 @app.route('/output')
 def bill_output():
   input_term = request.args.get('bill_search')
-  engine = create_engine('sqlite:///../bill_db.sqlite')
+  engine = create_engine('sqlite:///./bill_db.sqlite')
   query = 'SELECT * FROM bill_info_table WHERE Active ORDER BY "index" ASC ;'
   query_result=pd.read_sql_query(query,engine)
   query_results = query_result.set_index('index')
